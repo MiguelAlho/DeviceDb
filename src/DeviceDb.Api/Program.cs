@@ -1,3 +1,6 @@
+using DeviceDb.Api.Adaptors;
+using DeviceDb.Api.Domain.Devices;
+using Microsoft.AspNetCore.Mvc.Versioning.Conventions;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +11,14 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "DeviceDb", Description = "Minimal REST API for Device management", Version = "v1" });
 });
+builder.Services.AddControllers();
+builder.Services.AddApiVersioning(options =>
+{
+    options.ReportApiVersions = true;
+    options.Conventions.Add(new VersionByNamespaceConvention());
+});
+
+builder.Services.AddSingleton<IDeviceRepository>(new InMemoryDeviceRepository());
 
 
 var app = builder.Build();
@@ -26,8 +37,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();    
 }    
 app.UseHttpsRedirection();
-
-app.MapGet("/", () => "hello");
-
+app.MapControllers();
 
 app.Run();
