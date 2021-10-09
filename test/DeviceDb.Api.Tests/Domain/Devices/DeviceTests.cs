@@ -9,7 +9,7 @@ namespace DeviceDb.Api.Tests.Domain.Devices
 {
     public class DeviceTests
     {
-        readonly Fixture _fixture = new();
+        private readonly Fixture _fixture = new();
 
         [Fact]
         public void CreateCreatesInstancesWithValidDate()

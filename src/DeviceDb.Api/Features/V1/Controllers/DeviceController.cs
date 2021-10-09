@@ -20,6 +20,7 @@ namespace DeviceDb.Api.Features.V1.Controllers
         /// <returns></returns>
         [HttpPost("", Name = nameof(AddDevice))]
         [ProducesResponseType(typeof(CreatedResult), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddDevice([FromBody] AddDeviceRequest request)
         {
             var device = Device.Create(DeviceId.Create(), request.Name, BrandId.From(request.Brand));
