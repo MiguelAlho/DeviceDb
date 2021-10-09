@@ -18,14 +18,15 @@ namespace DeviceDb.Api.Features.V1.Controllers
         /// </summary>
         /// <param name="request">The device data</param>
         /// <returns></returns>
-        [HttpPost]
-        [ProducesResponseType(typeof(CreatedResult), 201)]
-        [ProducesResponseType(500)]
+        [HttpPost("", Name = nameof(AddDevice))]
+        [ProducesResponseType(typeof(CreatedResult), StatusCodes.Status201Created)]
         public async Task<IActionResult> AddDevice([FromBody] AddDeviceRequest request)
         {
             var device = Device.Create(DeviceId.Create(), request.Name, BrandId.From(request.Brand));
             await _repo.SaveDeviceAsync(device);
 
+            //TODO: Fix location header when Get is implemented
+            //var url = Url.RouteUrl("GetDevice", new { id = device.Id }, Request.Scheme, Request.Host.ToUriComponent());
             return new CreatedResult($"replacewithurl/device/{device.Id.Value}", null);
         }
     }
