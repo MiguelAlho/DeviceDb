@@ -28,6 +28,7 @@
         //public Task<IReadOnlyCollection<Device>> GetListOfDevicesByBrandAsync(BrandId id);
 
         public Task SaveDeviceAsync(Device device);
+        public Task<Device?> GetDeviceAsync(Guid guid);
 
         //public Task DeleteDeviceAsync(DeviceId id);
 

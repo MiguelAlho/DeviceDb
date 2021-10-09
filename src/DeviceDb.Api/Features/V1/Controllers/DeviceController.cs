@@ -30,6 +30,31 @@ namespace DeviceDb.Api.Features.V1.Controllers
             //var url = Url.RouteUrl("GetDevice", new { id = device.Id }, Request.Scheme, Request.Host.ToUriComponent());
             return new CreatedResult($"replacewithurl/device/{device.Id.Value}", null);
         }
+
+        /// <summary>
+        /// Get a device by an Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        [HttpGet("{id}", Name = nameof(GetDevice))]
+        [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetDevice(Guid id)
+        {
+            var device = await _repo.GetDeviceAsync(id);
+
+            if (device == null)
+                return NotFound();
+
+            return new OkObjectResult(new DeviceResponse {
+                Id = device.Id.Value,
+                Name = device.Name,
+                Brand = device.BrandId.Value,
+                CreatedOn = device.CreatedOn,
+            });
+        }
     }
 
 
