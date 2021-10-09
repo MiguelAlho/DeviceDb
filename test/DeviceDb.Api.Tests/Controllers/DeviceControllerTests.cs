@@ -16,9 +16,9 @@ namespace DeviceDb.Api.Tests.Controllers
         {
             public class WhenPostingANewValidDevice
             {
-                Fixture _fixture = new Fixture();
-                private CreatedResult createdResult;
-                private IDeviceRepository _repo;
+                private readonly Fixture _fixture = new();
+                private readonly CreatedResult _createdResult;
+                private readonly IDeviceRepository _repo;
 
                 public WhenPostingANewValidDevice()
                 {
@@ -31,14 +31,14 @@ namespace DeviceDb.Api.Tests.Controllers
                         Brand = _fixture.Create<string>()
                     };
 
-                    createdResult = (CreatedResult)controller.AddDevice(request).Result;
+                    _createdResult = (CreatedResult)controller.AddDevice(request).Result;
                 }
 
                 [Fact]
-                public void StatusShouldBeCreated() => createdResult.StatusCode.Should().Be((int)HttpStatusCode.Created);
+                public void StatusShouldBeCreated() => _createdResult.StatusCode.Should().Be((int)HttpStatusCode.Created);
 
                 [Fact]
-                public void ResultShouldHaveResouceLocation() => createdResult.Location.Should().NotBeEmpty();
+                public void ResultShouldHaveResouceLocation() => _createdResult.Location.Should().NotBeEmpty();
 
                 [Fact]
                 public void SaveDeviceIsCalled() => _repo.Received(1).SaveDeviceAsync(Arg.Any<Device>());

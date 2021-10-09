@@ -16,7 +16,7 @@
         }
 
         internal static Device Create(DeviceId id, string name, BrandId brandId) 
-            => new Device(id, name, brandId, DateTime.Now);
+            => new(id, name, brandId, DateTime.Now);
     }
 
     public interface IDeviceRepository

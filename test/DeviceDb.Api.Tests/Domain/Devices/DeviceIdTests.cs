@@ -8,7 +8,7 @@ namespace DeviceDb.Api.Tests.Domain.Devices
 {
     public class DeviceIdTests
     {
-        static Fixture _fixture = new Fixture();
+        private static readonly Fixture _fixture = new();
 
         public class WhenCreatingAnId
         {

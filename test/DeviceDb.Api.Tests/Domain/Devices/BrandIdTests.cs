@@ -9,7 +9,7 @@ namespace DeviceDb.Api.Tests.Domain.Devices
 {
     public class BrandIdTests
     {
-        static Fixture _fixture = new Fixture();
+        private static readonly Fixture _fixture = new();
 
         public class WhenCreatingAnId
         {
@@ -36,7 +36,7 @@ namespace DeviceDb.Api.Tests.Domain.Devices
             [Fact]
             public void ExceptionIsThrownIfBrandIdStringIsEmpty()
             {
-                Action act = () => BrandId.From(String.Empty);
+                Action act = () => BrandId.From(string.Empty);
                 act.Should().Throw<ArgumentException>();
             }
 

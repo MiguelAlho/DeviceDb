@@ -9,12 +9,9 @@ namespace DeviceDb.Api.Features.V1.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     public class DeviceController : ControllerBase
     {
-        private readonly IDeviceRepository repo;
+        private readonly IDeviceRepository _repo;
 
-        public DeviceController(IDeviceRepository repo)
-        {
-            this.repo = repo;
-        }
+        public DeviceController(IDeviceRepository repo) => _repo = repo;
 
         /// <summary>
         /// Adds a device to the device database, generating a resource link for it
@@ -26,8 +23,8 @@ namespace DeviceDb.Api.Features.V1.Controllers
         [ProducesResponseType(500)]
         public async Task<IActionResult> AddDevice([FromBody] AddDeviceRequest request)
         {
-            Device device = Device.Create(DeviceId.Create(), request.Name, BrandId.From(request.Brand));
-            await repo.SaveDeviceAsync(device);
+            var device = Device.Create(DeviceId.Create(), request.Name, BrandId.From(request.Brand));
+            await _repo.SaveDeviceAsync(device);
 
             return new CreatedResult($"replacewithurl/device/{device.Id.Value}", null);
         }

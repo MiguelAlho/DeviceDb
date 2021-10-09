@@ -10,13 +10,13 @@
     {        
         internal Guid Value { get; }
 
-        public static DeviceId Create() => new DeviceId(Guid.NewGuid());
+        public static DeviceId Create() => new(Guid.NewGuid());
 
         private DeviceId(Guid value) => Value = value;
 
         internal static DeviceId From(Guid deviceId)
         {
-            if (deviceId == default(Guid))
+            if (deviceId == default)
                 throw new ArgumentException("invalid device id format", nameof(deviceId));
 
             return new DeviceId(deviceId);

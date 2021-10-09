@@ -8,12 +8,12 @@ namespace DeviceDb.Api.Tests.Domain.Devices
 {
     public class DeviceTests
     {
-        Fixture _fixture = new Fixture();
+        readonly Fixture _fixture = new();
 
         [Fact]
         public void CanCreateInstanceOfDevice()
         {
-            var device = new Device(DeviceId.Create(), string.Empty, BrandId.From(_fixture.Create<String>()), DateTime.Now);
+            var device = new Device(DeviceId.Create(), string.Empty, BrandId.From(_fixture.Create<string>()), DateTime.Now);
 
             device.Should().NotBeNull();
         }

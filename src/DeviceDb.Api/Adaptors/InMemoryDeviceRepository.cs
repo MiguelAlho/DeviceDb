@@ -4,8 +4,8 @@ namespace DeviceDb.Api.Adaptors
 {
     public class InMemoryDeviceRepository : IDeviceRepository
     {
-        List<Device> devices = new List<Device>();
+        private readonly List<Device> _devices = new();
 
-        public async Task SaveDeviceAsync(Device device) => devices.Add(device);
+        public async Task SaveDeviceAsync(Device device) => _devices.Add(device);
     }
 }
