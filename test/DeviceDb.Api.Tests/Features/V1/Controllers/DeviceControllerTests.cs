@@ -8,25 +8,24 @@ using NSubstitute;
 using System.Net;
 using Xunit;
 
-namespace DeviceDb.Api.Tests.Controllers
+namespace DeviceDb.Api.Tests.Features.V1.Controllers
 {
     public class DeviceControllerTests
     {
-        public class PostDevice
+        public class WhenPostingADevice
         {
-            public class WhenPostingANewValidDevice
+            public class GivenANewValidDevice
             {
                 private readonly Fixture _fixture = new();
                 private readonly CreatedResult _createdResult;
                 private readonly IDeviceRepository _repo;
 
-                public WhenPostingANewValidDevice()
+                public GivenANewValidDevice()
                 {
                     _repo = Substitute.For<IDeviceRepository>();
 
                     var controller = new DeviceController(_repo);
-                    var request = new AddDeviceRequest()
-                    {
+                    var request = new AddDeviceRequest() {
                         Name = _fixture.Create<string>(),
                         Brand = _fixture.Create<string>()
                     };
@@ -46,5 +45,5 @@ namespace DeviceDb.Api.Tests.Controllers
         }
     }
 
-    
+
 }
