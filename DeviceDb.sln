@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9055B4EF-F19
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceDb.Api", "src\DeviceDb.Api\DeviceDb.Api.csproj", "{B255B6E9-CF0B-49DD-8DF5-8C5341194F8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceDb.Api.Tests", "test\DeviceDb.Api.Tests\DeviceDb.Api.Tests.csproj", "{4FFC7AAA-B0BE-428D-9AF1-40D67779510D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceDb.Api.Tests", "test\DeviceDb.Api.Tests\DeviceDb.Api.Tests.csproj", "{4FFC7AAA-B0BE-428D-9AF1-40D67779510D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{EF7CFA96-6FAD-469B-A591-7C607C95EDA1}"
 EndProject
@@ -15,12 +15,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adrs", "adrs", "{F146AAD9-B729-4608-89DE-87A1D27CFC41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceDb.TestHelpers", "test\DeviceDb.TestHelpers\DeviceDb.TestHelpers.csproj", "{216ED099-5609-4C61-8150-B52A32B43C4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceDb.TestHelpers", "test\DeviceDb.TestHelpers\DeviceDb.TestHelpers.csproj", "{216ED099-5609-4C61-8150-B52A32B43C4C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceDb.Api.IntegrationTests", "test\DeviceDb.Api.IntegrationTests\DeviceDb.Api.IntegrationTests.csproj", "{9ACF7DFA-2CE9-47F3-97AE-CDB7DAB68273}"
 EndProject
