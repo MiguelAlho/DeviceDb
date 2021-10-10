@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using AutoFixture;
 using DeviceDb.Api.Features.V1.Models;
-using DeviceDb.Api.Tests.Helpers;
+using DeviceDb.TestHelpers;
 using FluentAssertions;
 using Xunit;
 

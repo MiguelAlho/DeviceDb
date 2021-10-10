@@ -26,9 +26,10 @@ public class DeviceController : ControllerBase
         var device = Device.Create(DeviceId.Create(), request.Name, BrandId.From(request.Brand));
         await _repo.SaveDeviceAsync(device);
 
-        //TODO: Fix location header when Get is implemented
-        //var url = Url.RouteUrl("GetDevice", new { id = device.Id }, Request.Scheme, Request.Host.ToUriComponent());
-        return new CreatedResult($"replacewithurl/device/{device.Id.Value}", null);
+        return new CreatedAtRouteResult(
+            nameof(GetDevice), 
+            new {id = device.Id.Value}, 
+            null);
     }
 
     /// <summary>

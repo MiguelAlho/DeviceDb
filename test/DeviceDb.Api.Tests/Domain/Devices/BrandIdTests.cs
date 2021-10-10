@@ -3,7 +3,7 @@ using Xunit;
 using FluentAssertions;
 using DeviceDb.Api.Domain.Devices;
 using AutoFixture;
-using DeviceDb.Api.Tests.Helpers;
+using DeviceDb.TestHelpers;
 
 namespace DeviceDb.Api.Tests.Domain.Devices;
 

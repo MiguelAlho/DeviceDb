@@ -28,6 +28,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DeviceDb.Api\DeviceDb.Api.csproj" />
+    <ProjectReference Include="..\DeviceDb.TestHelpers\DeviceDb.TestHelpers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Helpers\" />
   </ItemGroup>
 
 </Project>
