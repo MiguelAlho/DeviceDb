@@ -5,6 +5,9 @@
 /// </summary>
 public record BrandId
 {
+    /// <summary>
+    /// the brand id
+    /// </summary>
     public string Value { get; }
 
     private BrandId(string value) => Value = value;
@@ -17,5 +20,9 @@ public record BrandId
         return new BrandId(brandId);
     }
 
+    /// <summary>
+    /// returns the brand id value
+    /// </summary>
+    /// <returns></returns>
     public override string ToString() => Value;
 }

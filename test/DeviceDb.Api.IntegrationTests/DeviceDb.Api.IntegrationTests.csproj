@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\test\DeviceDb.TestHelpers\DeviceDb.TestHelpers.csproj" />
-    <ProjectReference Include="..\DeviceDb.Api\DeviceDb.Api.csproj" />
+    <ProjectReference Include="..\DeviceDb.TestHelpers\DeviceDb.TestHelpers.csproj" />
+    <ProjectReference Include="..\..\src\DeviceDb.Api\DeviceDb.Api.csproj" />
   </ItemGroup>
 
 </Project>
