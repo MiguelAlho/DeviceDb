@@ -45,7 +45,7 @@ namespace DeviceDb.Api.Features.V1.Controllers
         {
             var device = await _repo.GetDeviceAsync(id);
 
-            if (device == null)
+            if (device == default)
                 return NotFound();
 
             return new OkObjectResult(new DeviceResponse {
@@ -54,6 +54,25 @@ namespace DeviceDb.Api.Features.V1.Controllers
                 Brand = device.BrandId.Value,
                 CreatedOn = device.CreatedOn,
             });
+        }
+
+        /// <summary>
+        /// Get a list of all the devices available
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        [HttpGet("", Name = nameof(GetListOfDevices))]
+        [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
+        public async IAsyncEnumerable<DeviceResponse> GetListOfDevices()
+        {
+            await foreach (var device in  _repo.GetAllDevicesAsync()) {
+                yield return new DeviceResponse {
+                    Id = device.Id.Value,
+                    Name = device.Name,
+                    Brand = device.BrandId.Value,
+                    CreatedOn = device.CreatedOn,
+                };
+            };
         }
     }
 

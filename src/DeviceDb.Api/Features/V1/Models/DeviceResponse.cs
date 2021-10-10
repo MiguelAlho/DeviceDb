@@ -2,7 +2,7 @@
 
 namespace DeviceDb.Api.Features.V1.Models
 {
-    internal record DeviceResponse
+    public record DeviceResponse
     {
         public Guid Id { get; init; }
         public string Name { get; init; }

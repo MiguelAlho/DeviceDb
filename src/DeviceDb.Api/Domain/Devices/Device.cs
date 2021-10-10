@@ -29,6 +29,7 @@
 
         public Task SaveDeviceAsync(Device device);
         public Task<Device?> GetDeviceAsync(Guid guid);
+        public IAsyncEnumerable<Device> GetAllDevicesAsync();
 
         //public Task DeleteDeviceAsync(DeviceId id);
 
