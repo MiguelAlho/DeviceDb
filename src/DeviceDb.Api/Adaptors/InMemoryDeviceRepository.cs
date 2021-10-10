@@ -13,6 +13,13 @@ public class InMemoryDeviceRepository : IDeviceRepository
             yield return d;
     }
     public async Task<Device?> GetDeviceAsync(DeviceId id) => _devices.FirstOrDefault(x => x.Id.Value == id.Value);
+
+    public async IAsyncEnumerable<Device> GetAllDevicesByBrandAsync(BrandId brandId)
+    {
+        foreach (var d in _devices.Where(o => o.BrandId.Value == brandId.Value))
+            yield return d;
+    }
+
     public async Task SaveDeviceAsync(Device device)
     {
         var repoDevice = _devices.FirstOrDefault(o => o.Id.Value == device.Id.Value);
@@ -32,4 +39,6 @@ public class InMemoryDeviceRepository : IDeviceRepository
 
         _devices.Remove(device!);
     }
+
+    
 }

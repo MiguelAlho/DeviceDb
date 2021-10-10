@@ -93,6 +93,61 @@ public class DeviceControllerTests
         }    
     }
 
+    public class GetDeviceListByBrandId
+    {
+        [Fact]
+        public async Task GettingDeviceListWithNoDevicesReturnsOKWithEmptyArrayPayload()
+        {
+            var noise = new DeviceBuilder().Build();
+
+            await using var app = new DeviceDbApplication();
+            await app.Repo.SaveDeviceAsync(noise);
+
+            using var client = app.CreateClient();
+            using var _response = await client.GetAsync($"/api/v1/device/search?brand=test");
+
+            _response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            var payload = JsonConvert.DeserializeObject<DeviceResponse[]>(await _response.Content.ReadAsStringAsync());
+
+            payload.Should().BeEquivalentTo(Array.Empty<DeviceResponse>());
+        }
+
+        [Fact]
+        public async Task GettingDeviceListWithDevicesReturnsOKWithValidPayload()
+        {
+            var noise = new DeviceBuilder().Build();
+            var device1 = new DeviceBuilder().WithBrand("test").Build();
+            var device2 = new DeviceBuilder().WithBrand("test").Build();
+
+            await using var app = new DeviceDbApplication();
+            await app.Repo.SaveDeviceAsync(noise);  
+            await app.Repo.SaveDeviceAsync(device1);
+            await app.Repo.SaveDeviceAsync(device2);
+
+            using var client = app.CreateClient();
+            using var _response = await client.GetAsync($"/api/v1/device/search?brand=test");
+
+            _response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            var payload = JsonConvert.DeserializeObject<DeviceResponse[]>(await _response.Content.ReadAsStringAsync());
+
+            payload.Should().BeEquivalentTo(new DeviceResponse[] {
+                DeviceToDeviceResponse(device1),
+                DeviceToDeviceResponse(device2)
+            });
+        }
+
+        [Fact]
+        public async Task InvalidSearchTermReturnsBadRequest()
+        {
+            await using var app = new DeviceDbApplication();
+
+            using var client = app.CreateClient();
+            using var _response = await client.GetAsync($"/api/v1/device/search?brand=");
+
+            _response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+        }
+    }
+
     public class PostDevice
     {
         [Fact]

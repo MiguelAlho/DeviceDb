@@ -9,7 +9,7 @@ public class DeviceBuilder
 
     private Guid _deviceId = _fixture.Create<Guid>();
     private readonly string _name = _fixture.Create<string>();
-    private readonly string _bandId = _fixture.Create<string>();
+    private string _brandId = _fixture.Create<string>();
     private readonly DateTime _createdOn = _fixture.Create<DateTime>();
 
     public DeviceBuilder WithId(Guid id)
@@ -18,6 +18,11 @@ public class DeviceBuilder
         return this;
     }
 
-    public Device Build() => new(DeviceId.From(_deviceId), _name, BrandId.From(_bandId), _createdOn);
+    public DeviceBuilder WithBrand(string brand)
+    {
+        _brandId = brand;
+        return this;
+    }
 
+    public Device Build() => new(DeviceId.From(_deviceId), _name, BrandId.From(_brandId), _createdOn);
 }

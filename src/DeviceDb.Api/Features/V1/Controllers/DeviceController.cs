@@ -1,4 +1,5 @@
-﻿using DeviceDb.Api.Domain.Devices;
+﻿using System.ComponentModel.DataAnnotations;
+using DeviceDb.Api.Domain.Devices;
 using DeviceDb.Api.Features.V1.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,29 @@ public class DeviceController : ControllerBase
     public async IAsyncEnumerable<DeviceResponse> GetListOfDevices()
     {
         await foreach (var device in _repo.GetAllDevicesAsync()) {
+            yield return new DeviceResponse {
+                Id = device.Id.Value,
+                Name = device.Name,
+                Brand = device.BrandId.Value,
+                CreatedOn = device.CreatedOn,
+            };
+        };
+    }
+
+    /// <summary>
+    /// Get a list of all the devices available, for a specific brand
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    [HttpGet("search", Name = nameof(GetListOfDevicesForBrand))]
+    [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status400BadRequest)]
+    public async IAsyncEnumerable<DeviceResponse> GetListOfDevicesForBrand([FromQuery] string brand)
+    {
+        if (string.IsNullOrWhiteSpace(brand))
+            throw new ArgumentNullException(nameof(brand));
+
+        await foreach (var device in _repo.GetAllDevicesByBrandAsync(BrandId.From(brand))) {
             yield return new DeviceResponse {
                 Id = device.Id.Value,
                 Name = device.Name,
