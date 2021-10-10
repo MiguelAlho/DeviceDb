@@ -1,5 +1,6 @@
 ﻿using DeviceDb.Api.Domain.Devices;
 using DeviceDb.Api.Features.V1.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeviceDb.Api.Features.V1.Controllers;
@@ -82,9 +83,9 @@ public class DeviceController : ControllerBase
     /// <param name="request">The device data</param>
     /// <returns></returns>
     [HttpDelete("{id}", Name = nameof(DeleteDevice))]
-    [ProducesResponseType(typeof(CreatedResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(OkResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteDevice(Guid id)
     {
         var device = await _repo.GetDeviceAsync(DeviceId.From(id));
@@ -95,5 +96,37 @@ public class DeviceController : ControllerBase
         await _repo.DeleteDeviceAsync(DeviceId.From(id));
 
         return Ok();
+    }
+
+    /// <summary>
+    /// Replaces the content of a device, based on the JsonPatch supplied.
+    /// 
+    /// Only non immutable fields can be replaced.
+    /// </summary>
+    /// <param name="request">The device data</param>
+    /// <returns></returns>
+    [HttpPatch("{id}", Name = nameof(PatchDevice))]
+    [ProducesResponseType(typeof(OkResult), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PatchDevice(Guid id, [FromBody] JsonPatchDocument<UpdateableDeviceRequest> patchDocument)
+    {
+        if(patchDocument == default)
+            return BadRequest();
+
+        if (patchDocument.Operations.Any(o => o.op != "replace"))
+            return new BadRequestObjectResult(new { error = "Only replace patches supported in this domain." });
+
+        var device = await _repo.GetDeviceAsync(DeviceId.From(id));
+        if (device == default)
+            return NotFound();
+
+        var update = new UpdateableDeviceRequest() { Name = device.Name, Brand = device.BrandId.Value};
+        patchDocument.ApplyTo(update);
+
+        device.Update(new UpdateDevice { Name = update.Name, Brand = update.Brand });
+
+        await _repo.SaveDeviceAsync(device);
+        return NoContent();
     }
 }

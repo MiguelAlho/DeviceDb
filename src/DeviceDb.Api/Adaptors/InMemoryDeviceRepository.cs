@@ -13,7 +13,16 @@ public class InMemoryDeviceRepository : IDeviceRepository
             yield return d;
     }
     public async Task<Device?> GetDeviceAsync(DeviceId id) => _devices.FirstOrDefault(x => x.Id.Value == id.Value);
-    public async Task SaveDeviceAsync(Device device) => _devices.Add(device);
+    public async Task SaveDeviceAsync(Device device)
+    {
+        Device? repoDevice = _devices.FirstOrDefault(o => o.Id.Value == device.Id.Value);
+
+        if(repoDevice != default) {
+            _devices.Remove(repoDevice);
+        }
+
+        _devices.Add(device);
+    }
     public async Task DeleteDeviceAsync(DeviceId id)
     {
         Device? device = _devices.FirstOrDefault(o => o.Id.Value == id.Value);

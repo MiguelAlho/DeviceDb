@@ -9,6 +9,7 @@ using DeviceDb.Api.Domain.Devices;
 using DeviceDb.Api.Features.V1.Models;
 using DeviceDb.TestHelpers;
 using FluentAssertions;
+using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -122,7 +123,10 @@ public class DeviceControllerTests
             await using var app = new DeviceDbApplication();
             
             using var client = app.CreateClient();
-            using var _response = await client.PostAsync($"/api/v1/device/", new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json"));
+            using var _response = await client.PostAsync(
+                $"/api/v1/device/", 
+                new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json")
+            );
 
             _response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
         }
@@ -167,8 +171,125 @@ public class DeviceControllerTests
         }
     }
 
+    public class PatchDevice
+    {
+        [Fact]
+        public async Task EmptyPatchDataProducesBadRequest()
+        {
+            await using var app = new DeviceDbApplication();
 
-    protected static DeviceResponse DeviceToDeviceResponse(Domain.Devices.Device device) => new DeviceResponse {
+            using var client = app.CreateClient();
+            var id = Guid.NewGuid();
+
+            using var _response = await client.PatchAsync($"/api/v1/device/{id}", new StringContent("", Encoding.UTF8, "application/json"));
+
+            _response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task ValidPatchDataForInexistentDeviceProducesNotFound()
+        {
+            await using var app = new DeviceDbApplication();
+
+            using var client = app.CreateClient();
+            var id = Guid.NewGuid();
+
+            var patchDocument = new JsonPatchDocument<UpdateableDeviceRequest>()
+                .Replace(o => o.Name, "new name");
+
+            using var _response = await client.PatchAsync(
+                $"/api/v1/device/{id}",
+                new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"));
+
+            _response.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task ValidPatchDataForNameProducesOk()
+        {
+            var device = new DeviceBuilder().Build();
+            var id = device.Id.Value;
+            var brand = device.BrandId.Value;
+            var newName = "new name";
+
+            await using var app = new DeviceDbApplication();
+            await app.Repo.SaveDeviceAsync(device);
+
+            using var client = app.CreateClient();
+            var patchDocument = new JsonPatchDocument<UpdateableDeviceRequest>()
+                .Replace(o => o.Name, newName);
+
+            using var _response = await client.PatchAsync(
+                $"/api/v1/device/{device.Id.Value}",
+                new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json")
+            );
+
+            _response.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
+
+            Device currentDevice = await app.Repo.GetDeviceAsync(DeviceId.From(id));
+            currentDevice.Name.Should().Be(newName);
+            currentDevice.BrandId.Value.Should().Be(brand);
+
+        }
+        
+        [Fact]
+        public async Task ValidPatchDataForBrandProducesOk()
+        {
+            var device = new DeviceBuilder().Build();
+            var id = device.Id.Value;
+            var newBrand = "new brand";
+            var name = device.Name;
+
+            await using var app = new DeviceDbApplication();
+            await app.Repo.SaveDeviceAsync(device);
+
+            using var client = app.CreateClient();
+            var patchDocument = new JsonPatchDocument<UpdateableDeviceRequest>()
+                .Replace(o => o.Brand, newBrand);
+
+            using var _response = await client.PatchAsync(
+                $"/api/v1/device/{device.Id.Value}",
+                new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json")
+            );
+
+            _response.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
+
+            Device currentDevice = await app.Repo.GetDeviceAsync(DeviceId.From(id));
+            currentDevice.Name.Should().Be(name);
+            currentDevice.BrandId.Value.Should().Be(newBrand);
+        }
+
+        [Fact]
+        public async Task ValidPatchDataForAllMutablePropertiesProducesOk()
+        {
+            var device = new DeviceBuilder().Build();
+            var id = device.Id.Value;
+            var newBrand = "new brand";
+            var newName = "new name";
+
+            await using var app = new DeviceDbApplication();
+            await app.Repo.SaveDeviceAsync(device);
+
+            using var client = app.CreateClient();
+            var patchDocument = new JsonPatchDocument<UpdateableDeviceRequest>()
+                .Replace(o => o.Brand, newBrand)
+                .Replace(o => o.Name, newName);
+
+            using var _response = await client.PatchAsync(
+                $"/api/v1/device/{device.Id.Value}",
+                new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json")
+            );
+
+            _response.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
+
+            Device currentDevice = await app.Repo.GetDeviceAsync(DeviceId.From(id));
+            currentDevice.Name.Should().Be(newName);
+            currentDevice.BrandId.Value.Should().Be(newBrand);
+        }
+    }
+
+
+    protected static DeviceResponse DeviceToDeviceResponse(Device device) => new DeviceResponse {
         Id = device.Id.Value,
         Name = device.Name,
         Brand = device.BrandId.Value,

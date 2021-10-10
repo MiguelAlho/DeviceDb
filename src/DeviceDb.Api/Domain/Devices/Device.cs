@@ -1,10 +1,12 @@
-﻿namespace DeviceDb.Api.Domain.Devices;
+﻿using DeviceDb.Api.Features.V1.Models;
+
+namespace DeviceDb.Api.Domain.Devices;
 
 public class Device
 {
     public DeviceId Id { get; }
-    public string Name { get; }
-    public BrandId BrandId { get; }
+    public string Name { get; private set; }
+    public BrandId BrandId { get; private set; }
     public DateTime CreatedOn { get; }
 
     internal Device(DeviceId id, string name, BrandId brandId, DateTime createdOn)
@@ -17,14 +19,20 @@ public class Device
 
     internal static Device Create(DeviceId id, string name, BrandId brandId)
         => new(id, name, brandId, DateTime.Now);
+    internal void Update(UpdateDevice changes) {
+        Name = changes.Name;
+        BrandId = BrandId.From(changes.Brand);
+    }
+}
+
+internal record UpdateDevice
+{
+    public string Name { get; init; }
+    public string Brand { get; init; }
 }
 
 public interface IDeviceRepository
 {
-    //public Task<Device> LoadDeviceAsync(DeviceId id);
-
-    //public Task<IReadOnlyCollection<Device>> GetListOfDevicesAsync();
-
     //public Task<IReadOnlyCollection<Device>> GetListOfDevicesByBrandAsync(BrandId id);
 
     public Task<Device?> GetDeviceAsync(DeviceId guid);

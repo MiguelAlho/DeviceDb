@@ -2,6 +2,7 @@ using DeviceDb.Api.Adaptors;
 using DeviceDb.Api.Domain.Devices;
 using Microsoft.AspNetCore.Mvc.Versioning.Conventions;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "DeviceDb", Description = "Minimal REST API for Device management", Version = "v1" });
 });
 builder.Services.AddControllers();
+builder.Services.AddMvc().AddNewtonsoftJson();      //for json patch support
 builder.Services.AddApiVersioning(options =>
 {
     options.ReportApiVersions = true;
@@ -19,6 +21,7 @@ builder.Services.AddApiVersioning(options =>
 });
 
 builder.Services.AddSingleton<IDeviceRepository>(new InMemoryDeviceRepository());
+
 
 
 var app = builder.Build();
@@ -39,6 +42,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
+
 
 app.Run();
 
