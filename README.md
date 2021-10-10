@@ -3,7 +3,6 @@
 A Device management REST API.
 
 
-
 ## How to Build
 
 To build and work on it, clone the repository:
@@ -11,6 +10,20 @@ To build and work on it, clone the repository:
 ```
 git clone https://github.com/MiguelAlho/DeviceDb
 ```
+
+and from the command line, in the repo folder, run: 
+
+```
+dotnet build
+```
+
+or , to build and run tests
+
+```
+dotnet test
+```
+
+The project requires and SDK version 6.0.100-rc.1.21463.6 or above.
 
 ## How To Run
 

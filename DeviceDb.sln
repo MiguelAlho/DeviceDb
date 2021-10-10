@@ -19,8 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adrs", "adrs", "{F146AAD9-B729-4608-89DE-87A1D27CFC41}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceDb.TestHelpers", "test\DeviceDb.TestHelpers\DeviceDb.TestHelpers.csproj", "{216ED099-5609-4C61-8150-B52A32B43C4C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceDb.Api.IntegrationTests", "test\DeviceDb.Api.IntegrationTests\DeviceDb.Api.IntegrationTests.csproj", "{9ACF7DFA-2CE9-47F3-97AE-CDB7DAB68273}"
