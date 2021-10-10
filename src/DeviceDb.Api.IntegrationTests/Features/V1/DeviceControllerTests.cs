@@ -136,6 +136,38 @@ public class DeviceControllerTests
         };
     }
 
+    public class DeleteDevice
+    {
+        [Fact]
+        public async Task DeletingAnInexistentDeviceReturnsNotFound()
+        {
+            await using var app = new DeviceDbApplication();
+
+            using var client = app.CreateClient();
+            var id = Guid.NewGuid();
+
+            using var _response = await client.DeleteAsync($"/api/v1/device/{id}");
+
+            _response.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task DeletingAnExistentDeviceReturnsOK()
+        {
+            var id = Guid.NewGuid();
+            var device = new DeviceBuilder().WithId(id).Build();
+
+            await using var app = new DeviceDbApplication();
+            await app.Repo.SaveDeviceAsync(device);
+
+            using var client = app.CreateClient();
+            using var _response = await client.DeleteAsync($"/api/v1/device/{id}");
+
+            _response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+        }
+    }
+
+
     protected static DeviceResponse DeviceToDeviceResponse(Domain.Devices.Device device) => new DeviceResponse {
         Id = device.Id.Value,
         Name = device.Name,

@@ -44,7 +44,7 @@ public class DeviceController : ControllerBase
     [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetDevice(Guid id)
     {
-        var device = await _repo.GetDeviceAsync(id);
+        var device = await _repo.GetDeviceAsync(DeviceId.From(id));
 
         if (device == default)
             return NotFound();
@@ -74,5 +74,26 @@ public class DeviceController : ControllerBase
                 CreatedOn = device.CreatedOn,
             };
         };
+    }
+
+    /// <summary>
+    /// Deletes a device to the device database
+    /// </summary>
+    /// <param name="request">The device data</param>
+    /// <returns></returns>
+    [HttpDelete("{id}", Name = nameof(DeleteDevice))]
+    [ProducesResponseType(typeof(CreatedResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteDevice(Guid id)
+    {
+        var device = await _repo.GetDeviceAsync(DeviceId.From(id));
+
+        if (device == default)
+            return NotFound();
+
+        await _repo.DeleteDeviceAsync(DeviceId.From(id));
+
+        return Ok();
     }
 }

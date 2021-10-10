@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using DeviceDb.Api.Domain.Devices;
 
-namespace DeviceDb.Api.IntegrationTests.Features.V1;
+namespace DeviceDb.TestHelpers;
 
 public class DeviceBuilder
 {
@@ -18,6 +18,6 @@ public class DeviceBuilder
         return this;
     }
 
-    public Device Build() => new Device(DeviceId.From(_deviceId), _name, BrandId.From(_bandId),_createdOn);
+    public Device Build() => new Device(DeviceId.From(_deviceId), _name, BrandId.From(_bandId), _createdOn);
 
 }

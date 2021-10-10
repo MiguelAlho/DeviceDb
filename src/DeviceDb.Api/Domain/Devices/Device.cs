@@ -27,10 +27,10 @@ public interface IDeviceRepository
 
     //public Task<IReadOnlyCollection<Device>> GetListOfDevicesByBrandAsync(BrandId id);
 
-    public Task SaveDeviceAsync(Device device);
-    public Task<Device?> GetDeviceAsync(Guid guid);
+    public Task<Device?> GetDeviceAsync(DeviceId guid);
     public IAsyncEnumerable<Device> GetAllDevicesAsync();
 
-    //public Task DeleteDeviceAsync(DeviceId id);
+    public Task SaveDeviceAsync(Device device);
+    public Task DeleteDeviceAsync(DeviceId id);
 
 }

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace DeviceDb.Api.IntegrationTests.Features.V1;
 
-class DeviceDbApplication : WebApplicationFactory<Program>
+internal class DeviceDbApplication : WebApplicationFactory<Program>
 {
     InMemoryDeviceRepository _repo = new InMemoryDeviceRepository();
 
