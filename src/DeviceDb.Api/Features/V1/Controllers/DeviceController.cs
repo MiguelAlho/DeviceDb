@@ -67,7 +67,7 @@ public class DeviceController : ControllerBase
     /// </summary>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    [HttpGet("search", Name = nameof(GetListOfDevicesForBrand))]
+    [HttpGet("search", Name = nameof(SearchDevicesByBrand))]
     [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status400BadRequest)]
     public async IAsyncEnumerable<DeviceResponse> SearchDevicesByBrand([FromQuery] string brand)
