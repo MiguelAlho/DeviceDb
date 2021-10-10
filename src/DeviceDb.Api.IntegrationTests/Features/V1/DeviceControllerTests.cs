@@ -17,7 +17,7 @@ namespace DeviceDb.Api.IntegrationTests.Features.V1;
 
 public class DeviceControllerTests
 {
-    static Fixture _fixture = new();
+    private static readonly Fixture _fixture = new();
 
     public class GetDevice
     {
@@ -67,7 +67,7 @@ public class DeviceControllerTests
             _response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             var payload = JsonConvert.DeserializeObject<DeviceResponse[]>(await _response.Content.ReadAsStringAsync());
 
-            payload.Should().BeEquivalentTo(new DeviceResponse[] { });
+            payload.Should().BeEquivalentTo(Array.Empty<DeviceResponse>());
         }
 
         [Fact]
@@ -226,8 +226,8 @@ public class DeviceControllerTests
 
             _response.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
 
-            Device currentDevice = await app.Repo.GetDeviceAsync(DeviceId.From(id));
-            currentDevice.Name.Should().Be(newName);
+            var currentDevice = await app.Repo.GetDeviceAsync(DeviceId.From(id));
+            currentDevice!.Name.Should().Be(newName);
             currentDevice.BrandId.Value.Should().Be(brand);
 
         }
@@ -254,8 +254,8 @@ public class DeviceControllerTests
 
             _response.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
 
-            Device currentDevice = await app.Repo.GetDeviceAsync(DeviceId.From(id));
-            currentDevice.Name.Should().Be(name);
+            var currentDevice = await app.Repo.GetDeviceAsync(DeviceId.From(id));
+            currentDevice!.Name.Should().Be(name);
             currentDevice.BrandId.Value.Should().Be(newBrand);
         }
 
@@ -282,14 +282,14 @@ public class DeviceControllerTests
 
             _response.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
 
-            Device currentDevice = await app.Repo.GetDeviceAsync(DeviceId.From(id));
-            currentDevice.Name.Should().Be(newName);
+            var currentDevice = await app.Repo.GetDeviceAsync(DeviceId.From(id));
+            currentDevice!.Name.Should().Be(newName);
             currentDevice.BrandId.Value.Should().Be(newBrand);
         }
     }
 
 
-    protected static DeviceResponse DeviceToDeviceResponse(Device device) => new DeviceResponse {
+    static protected DeviceResponse DeviceToDeviceResponse(Device device) => new() {
         Id = device.Id.Value,
         Name = device.Name,
         Brand = device.BrandId.Value,

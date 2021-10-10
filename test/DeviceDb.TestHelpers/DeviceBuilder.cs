@@ -5,7 +5,7 @@ namespace DeviceDb.TestHelpers;
 
 public class DeviceBuilder
 {
-    private readonly static Fixture _fixture = new();
+    private static readonly Fixture _fixture = new();
 
     private Guid _deviceId = _fixture.Create<Guid>();
     private readonly string _name = _fixture.Create<string>();
@@ -18,6 +18,6 @@ public class DeviceBuilder
         return this;
     }
 
-    public Device Build() => new Device(DeviceId.From(_deviceId), _name, BrandId.From(_bandId), _createdOn);
+    public Device Build() => new(DeviceId.From(_deviceId), _name, BrandId.From(_bandId), _createdOn);
 
 }

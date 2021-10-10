@@ -8,11 +8,11 @@ namespace DeviceDb.Api.IntegrationTests.Features.V1;
 
 internal class DeviceDbApplication : WebApplicationFactory<Program>
 {
-    InMemoryDeviceRepository _repo = new InMemoryDeviceRepository();
+    private readonly InMemoryDeviceRepository _repo = new();
 
     public IDeviceRepository Repo { get => _repo; }
 
-    protected override IHost CreateHost(IHostBuilder builder)
+    override protected IHost CreateHost(IHostBuilder builder)
     {
         builder.ConfigureServices(services => {
             services.AddSingleton<IDeviceRepository>(_repo);

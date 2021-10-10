@@ -40,7 +40,6 @@ public class DeviceControllerTests
     {
         public class GivenAExistingDeviceId
         {
-            private readonly Fixture _fixture = new();
             private readonly Device _device;
             private readonly IDeviceRepository _repo;
 
@@ -64,7 +63,6 @@ public class DeviceControllerTests
 
         public class GivenAInexistantDeviceId
         {
-            private readonly Fixture _fixture = new();
             private readonly Device _device;
             private readonly IDeviceRepository _repo;
 
