@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using DeviceDb.Api.Domain.Devices;
+﻿using DeviceDb.Api.Domain.Devices;
 using DeviceDb.Api.Features.V1.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace DeviceDb.Api.Features.V1.Controllers;
 
@@ -47,6 +47,7 @@ public class DeviceController : ControllerBase
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     [HttpGet("", Name = nameof(GetListOfDevices))]
+    [SwaggerOperation(Summary="List devices", Description = "Returns the full list of stored devices.")]
     [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
     public async IAsyncEnumerable<DeviceResponse> GetListOfDevices()
     {
@@ -65,10 +66,11 @@ public class DeviceController : ControllerBase
     /// </summary>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    [HttpGet("search", Name = nameof(GetListOfDevicesForBrand))]
+    [HttpGet("search", Name = nameof(SearchDevicesByBrand))]
+    [SwaggerOperation(Summary = "Search by brand", Description = "Returns the full list of stored devices for the supplied brand.")]
     [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status400BadRequest)]
-    public async IAsyncEnumerable<DeviceResponse> GetListOfDevicesForBrand([FromQuery] string brand)
+    public async IAsyncEnumerable<DeviceResponse> SearchDevicesByBrand([FromQuery] string brand)
     {
         if (string.IsNullOrWhiteSpace(brand))
             throw new ArgumentNullException(nameof(brand));
@@ -84,11 +86,12 @@ public class DeviceController : ControllerBase
     }
 
     /// <summary>
-    /// Adds a device to the device database, generating a resource link for it
+    /// Adds a device to the device database, generating a resource link for it.
     /// </summary>
     /// <param name="request">The device data</param>
     /// <returns></returns>
     [HttpPost("", Name = nameof(AddDevice))]
+    [SwaggerOperation(Summary = "Add a new device", Description = "Submits a new device. Device Id is defined by the server. Check the location header on the response to get the created resource's id.")]
     [ProducesResponseType(typeof(CreatedResult), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddDevice([FromBody] AddDeviceRequest request)
@@ -132,6 +135,7 @@ public class DeviceController : ControllerBase
     /// <param name="request">The device data</param>
     /// <returns></returns>
     [HttpPatch("{id}", Name = nameof(PatchDevice))]
+    [SwaggerOperation(Summary = "Update a device", Description = "Updates a device's details. Only name and brand properties can be updated on devices.")]
     [ProducesResponseType(typeof(OkResult), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]

@@ -1,5 +1,4 @@
-﻿using System;
-using AutoFixture;
+﻿using AutoFixture;
 using DeviceDb.Api.Domain.Devices;
 using DeviceDb.Api.Features.V1.Controllers;
 using DeviceDb.Api.Features.V1.Models;
@@ -84,5 +83,4 @@ public class DeviceControllerTests
             public void DeleteDeviceIsNotCalled() => _repo.Received(0).DeleteDeviceAsync(Arg.Any<DeviceId>());
         }
     }
-
 }

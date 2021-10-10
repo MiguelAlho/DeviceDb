@@ -1,6 +1,4 @@
-﻿using DeviceDb.Api.Features.V1.Models;
-
-namespace DeviceDb.Api.Domain.Devices;
+﻿namespace DeviceDb.Api.Domain.Devices;
 
 public class Device
 {
