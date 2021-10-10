@@ -1,6 +1,8 @@
-﻿using DeviceDb.Api.Adaptors;
+﻿using System.Collections.Generic;
+using DeviceDb.Api.Adaptors;
 using DeviceDb.Api.Domain.Devices;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -14,9 +16,16 @@ internal class DeviceDbApplication : WebApplicationFactory<Program>
 
     override protected IHost CreateHost(IHostBuilder builder)
     {
-        builder.ConfigureServices(services => {
-            services.AddSingleton<IDeviceRepository>(_repo);
-        });
+        builder
+            .ConfigureAppConfiguration((context, configBuilder) => {
+                configBuilder.AddInMemoryCollection(
+                    new Dictionary<string, string> { 
+                        ["Database"] = "Data Source=:memory:" 
+                    });
+            })
+            .ConfigureServices(services => {
+                services.AddSingleton<IDeviceRepository>(_repo);
+            });
 
         return base.CreateHost(builder);
     }

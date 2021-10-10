@@ -1,11 +1,15 @@
-using System.Reflection;
 using DeviceDb.Api.Adaptors;
+using DeviceDb.Api.Adaptors.Sql.Migrations;
 using DeviceDb.Api.Domain.Devices;
+using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning.Conventions;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration["Database"] ?? throw new InvalidOperationException("Database connection string is not set");
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
@@ -38,6 +42,14 @@ builder.Services.AddVersionedApiExplorer(options =>
     options.DefaultApiVersion = new ApiVersion(1, 0);
 });
 
+builder.Services.AddFluentMigratorCore()
+    .ConfigureRunner(rb => rb
+        .AddSQLite()
+        .WithGlobalConnectionString(connectionString)
+        .ScanIn(typeof(Program).Assembly).For.Migrations())
+    .AddLogging(lb => lb.AddFluentMigratorConsole())
+    .BuildServiceProvider(false);
+
 builder.Services.AddSingleton<IDeviceRepository>(new InMemoryDeviceRepository());
 
 
@@ -60,7 +72,10 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
+app.MapFallback(() => Results.Redirect("/swagger"));
 
+//Database
+app.Migrate();
 
 app.Run();
 
