@@ -1,3 +1,4 @@
+using System.Reflection;
 using DeviceDb.Api.Adaptors;
 using DeviceDb.Api.Domain.Devices;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,11 @@ builder.Services.AddSwaggerGen(c =>
         Title = "DeviceDb", 
         Description = "Minimal REST API for Device management", 
         Version = "v1" });
+
+    // Set the comments path for the Swagger JSON and UI.
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 builder.Services.AddControllers();
 builder.Services.AddMvc().AddNewtonsoftJson();      //for json patch support

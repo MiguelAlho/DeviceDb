@@ -14,4 +14,7 @@ git clone https://github.com/MiguelAlho/DeviceDb
 
 ## How To Run
 
+Open the `DeviceDb.sln` solution file in Visual Studio and click f5. 
+
+
 
