@@ -14,25 +14,7 @@ public class DeviceController : ControllerBase
 
     public DeviceController(IDeviceRepository repo) => _repo = repo;
 
-    /// <summary>
-    /// Adds a device to the device database, generating a resource link for it
-    /// </summary>
-    /// <param name="request">The device data</param>
-    /// <returns></returns>
-    [HttpPost("", Name = nameof(AddDevice))]
-    [ProducesResponseType(typeof(CreatedResult), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddDevice([FromBody] AddDeviceRequest request)
-    {
-        var device = Device.Create(DeviceId.Create(), request.Name, BrandId.From(request.Brand));
-        await _repo.SaveDeviceAsync(device);
-
-        return new CreatedAtRouteResult(
-            nameof(GetDevice), 
-            new {id = device.Id.Value}, 
-            null);
-    }
-
+   
     /// <summary>
     /// Get a device by an Id
     /// </summary>
@@ -76,6 +58,26 @@ public class DeviceController : ControllerBase
             };
         };
     }
+
+    /// <summary>
+    /// Adds a device to the device database, generating a resource link for it
+    /// </summary>
+    /// <param name="request">The device data</param>
+    /// <returns></returns>
+    [HttpPost("", Name = nameof(AddDevice))]
+    [ProducesResponseType(typeof(CreatedResult), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AddDevice([FromBody] AddDeviceRequest request)
+    {
+        var device = Device.Create(DeviceId.Create(), request.Name, BrandId.From(request.Brand));
+        await _repo.SaveDeviceAsync(device);
+
+        return new CreatedAtRouteResult(
+            nameof(GetDevice),
+            new { id = device.Id.Value },
+            null);
+    }
+
 
     /// <summary>
     /// Deletes a device to the device database
