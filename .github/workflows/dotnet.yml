@@ -21,9 +21,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore --configuration Release --arch x86
+      run: dotnet build --no-restore --configuration Release -r linux-x64
     - name: Test
-      run: dotnet test --no-build --verbosity normal --arch x86
+      run: dotnet test --no-build --verbosity normal -r linux-x64
 
 ## things to solve:
 ## version the app (gitversion?)
