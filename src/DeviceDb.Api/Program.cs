@@ -46,11 +46,12 @@ builder.Services.AddFluentMigratorCore()
     .ConfigureRunner(rb => rb
         .AddSQLite()
         .WithGlobalConnectionString(connectionString)
-        .ScanIn(typeof(Program).Assembly).For.Migrations())
+        .ScanIn(typeof(Program).Assembly).For.Migrations()
+    )
     .AddLogging(lb => lb.AddFluentMigratorConsole())
     .BuildServiceProvider(false);
 
-builder.Services.AddSingleton<IDeviceRepository>(new InMemoryDeviceRepository());
+builder.Services.AddSingleton<IDeviceRepository>(new SqlDeviceRepository(connectionString));
 
 
 

@@ -41,9 +41,9 @@ public class DeviceControllerTests
             var device = new DeviceBuilder().WithId(id).Build();
 
             await using var app = new DeviceDbApplication();
-            await app.Repo.SaveDeviceAsync(device);
-
             using var client = app.CreateClient();
+
+            await app.Repo.SaveDeviceAsync(device);
             using var _response = await client.GetAsync($"/api/v1/device/{id}");
 
             _response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -77,10 +77,12 @@ public class DeviceControllerTests
             var device2 = new DeviceBuilder().Build();
 
             await using var app = new DeviceDbApplication();
+            using var client = app.CreateClient();
+
+            //repo calls only after client created
             await app.Repo.SaveDeviceAsync(device1);
             await app.Repo.SaveDeviceAsync(device2);
 
-            using var client = app.CreateClient();
             using var _response = await client.GetAsync($"/api/v1/device/");
 
             _response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -101,9 +103,9 @@ public class DeviceControllerTests
             var noise = new DeviceBuilder().Build();
 
             await using var app = new DeviceDbApplication();
-            await app.Repo.SaveDeviceAsync(noise);
-
             using var client = app.CreateClient();
+
+            await app.Repo.SaveDeviceAsync(noise);
             using var _response = await client.GetAsync($"/api/v1/device/search?brand=test");
 
             _response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -120,11 +122,12 @@ public class DeviceControllerTests
             var device2 = new DeviceBuilder().WithBrand("test").Build();
 
             await using var app = new DeviceDbApplication();
+            using var client = app.CreateClient();
+            
             await app.Repo.SaveDeviceAsync(noise);  
             await app.Repo.SaveDeviceAsync(device1);
             await app.Repo.SaveDeviceAsync(device2);
 
-            using var client = app.CreateClient();
             using var _response = await client.GetAsync($"/api/v1/device/search?brand=test");
 
             _response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -211,15 +214,15 @@ public class DeviceControllerTests
         }
 
         [Fact]
-        public async Task DeletingAnExistentDeviceReturnsOK()
+        public async Task DeletingAnExistingDeviceReturnsOK()
         {
             var id = Guid.NewGuid();
             var device = new DeviceBuilder().WithId(id).Build();
 
             await using var app = new DeviceDbApplication();
-            await app.Repo.SaveDeviceAsync(device);
-
             using var client = app.CreateClient();
+
+            await app.Repo.SaveDeviceAsync(device);
             using var _response = await client.DeleteAsync($"/api/v1/device/{id}");
 
             _response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -268,9 +271,10 @@ public class DeviceControllerTests
             var newName = "new name";
 
             await using var app = new DeviceDbApplication();
-            await app.Repo.SaveDeviceAsync(device);
 
             using var client = app.CreateClient();
+            await app.Repo.SaveDeviceAsync(device);
+
             var patchDocument = new JsonPatchDocument<UpdateableDeviceRequest>()
                 .Replace(o => o.Name, newName);
 
@@ -296,9 +300,9 @@ public class DeviceControllerTests
             var name = device.Name;
 
             await using var app = new DeviceDbApplication();
-            await app.Repo.SaveDeviceAsync(device);
-
             using var client = app.CreateClient();
+
+            await app.Repo.SaveDeviceAsync(device);
             var patchDocument = new JsonPatchDocument<UpdateableDeviceRequest>()
                 .Replace(o => o.Brand, newBrand);
 
@@ -323,9 +327,9 @@ public class DeviceControllerTests
             var newName = "new name";
 
             await using var app = new DeviceDbApplication();
-            await app.Repo.SaveDeviceAsync(device);
-
             using var client = app.CreateClient();
+            
+            await app.Repo.SaveDeviceAsync(device);
             var patchDocument = new JsonPatchDocument<UpdateableDeviceRequest>()
                 .Replace(o => o.Brand, newBrand)
                 .Replace(o => o.Name, newName);
