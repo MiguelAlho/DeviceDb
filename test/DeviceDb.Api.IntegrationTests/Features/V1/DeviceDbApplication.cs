@@ -20,7 +20,7 @@ internal class DeviceDbApplication : WebApplicationFactory<Program>
     
     //ensure open connection so inmemory db will stay throughout test lifetime
     private IDbConnection masterConnection;
-    private SqlDeviceRepository _repo;
+    private SqliteDeviceRepository _repo;
 
     public IDeviceRepository Repo { get => _repo; }
 
@@ -60,7 +60,7 @@ internal class DeviceDbApplication : WebApplicationFactory<Program>
         return base.DisposeAsync();
     }
 
-    public class MigratingSqlDeviceRepository : SqlDeviceRepository
+    public class MigratingSqlDeviceRepository : SqliteDeviceRepository
     {
         public MigratingSqlDeviceRepository(string conString) : base(conString)
         {

@@ -51,7 +51,7 @@ builder.Services.AddFluentMigratorCore()
     .AddLogging(lb => lb.AddFluentMigratorConsole())
     .BuildServiceProvider(false);
 
-builder.Services.AddSingleton<IDeviceRepository>(new SqlDeviceRepository(connectionString));
+builder.Services.AddSingleton<IDeviceRepository>(new SqliteDeviceRepository(connectionString));
 
 
 

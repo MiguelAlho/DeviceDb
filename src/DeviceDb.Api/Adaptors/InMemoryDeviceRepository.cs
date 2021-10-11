@@ -5,52 +5,11 @@ using Microsoft.Data.Sqlite;
 
 namespace DeviceDb.Api.Adaptors;
 
-public class InMemoryDeviceRepository : IDeviceRepository
-{
-    private readonly List<Device> _devices = new();
-
-
-    public async IAsyncEnumerable<Device> GetAllDevicesAsync()
-    {
-        foreach (var d in _devices)
-            yield return d;
-    }
-    public async Task<Device?> GetDeviceAsync(DeviceId id) => _devices.FirstOrDefault(x => x.Id.Value == id.Value);
-
-    public async IAsyncEnumerable<Device> GetAllDevicesByBrandAsync(BrandId brandId)
-    {
-        foreach (var d in _devices.Where(o => o.BrandId.Value == brandId.Value))
-            yield return d;
-    }
-
-    public async Task SaveDeviceAsync(Device device)
-    {
-        var repoDevice = _devices.FirstOrDefault(o => o.Id.Value == device.Id.Value);
-
-        if(repoDevice != default) {
-            _devices.Remove(repoDevice);
-        }
-
-        _devices.Add(device);
-    }
-    public async Task DeleteDeviceAsync(DeviceId id)
-    {
-        var device = _devices.FirstOrDefault(o => o.Id.Value == id.Value);
-
-        if (device == default)
-            throw new InvalidOperationException("Device does not exist");
-
-        _devices.Remove(device!);
-    }
-
-    
-}
-
-public class SqlDeviceRepository : IDeviceRepository
+public class SqliteDeviceRepository : IDeviceRepository
 {
     private readonly string _connectionString;
 
-    public SqlDeviceRepository(string connectionString)
+    public SqliteDeviceRepository(string connectionString)
     {
         _connectionString = connectionString;
     }
@@ -86,41 +45,34 @@ public class SqlDeviceRepository : IDeviceRepository
 
     public async IAsyncEnumerable<Device> GetAllDevicesByBrandAsync(BrandId brandId)
     {
-        using (var connection = await CreateOpenConnection()) {
+        using var connection = await CreateOpenConnection();
+        var devices = await connection.QueryAsync<DeviceRecord>("SELECT * FROM Device WHERE BrandId=@BrandId", new { BrandId = brandId.Value });
 
-            var devices = await connection.QueryAsync<DeviceRecord>("SELECT * FROM Device WHERE BrandId=@BrandId", new { BrandId = brandId.Value });
-
-            foreach (var device in devices) {
-                yield return new Device(
-                    DeviceId.From(Guid.Parse(device.Id)),
-                    device.Name,
-                    BrandId.From(device.BrandId),
-                    device.CreatedOn
-                );
-            }
-
-        }
-    }
-
-    public async Task<Device?> GetDeviceAsync(DeviceId id) {
-        using (var connection = await CreateOpenConnection())
-        {
-           
-            var devices = await connection.QueryAsync<DeviceRecord>("SELECT * FROM Device WHERE Id=@Id", new { Id = id.Value });
-
-            var device = devices.FirstOrDefault();
-
-            if (device == default)
-                return default;
-
-            return new Device(
-                DeviceId.From(Guid.Parse(device!.Id)),
+        foreach (var device in devices) {
+            yield return new Device(
+                DeviceId.From(Guid.Parse(device.Id)),
                 device.Name,
                 BrandId.From(device.BrandId),
                 device.CreatedOn
             );
-           
         }
+    }
+
+    public async Task<Device?> GetDeviceAsync(DeviceId id) {
+        using var connection = await CreateOpenConnection();
+
+        var devices = await connection.QueryAsync<DeviceRecord>("SELECT * FROM Device WHERE Id=@Id", new { Id = id.Value });
+        var device = devices.FirstOrDefault();
+
+        if (device == default)
+            return default;
+
+        return new Device(
+            DeviceId.From(Guid.Parse(device!.Id)),
+            device.Name,
+            BrandId.From(device.BrandId),
+            device.CreatedOn
+        );
     }
 
     public async Task SaveDeviceAsync(Device device)
