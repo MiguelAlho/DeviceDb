@@ -23,7 +23,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration Release
     - name: Test
-      run: dotnet test --no-build --verbosity normal -r linux-x64
+      run: dotnet test --no-build --configuration Release --verbosity normal -r linux-x64
 
 ## things to solve:
 ## version the app (gitversion?)
