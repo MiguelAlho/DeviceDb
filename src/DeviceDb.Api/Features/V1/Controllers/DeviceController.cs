@@ -70,12 +70,12 @@ public class DeviceController : ControllerBase
     [HttpGet("search", Name = nameof(SearchDevicesByBrand))]
     [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status400BadRequest)]
-    public async IAsyncEnumerable<DeviceResponse> SearchDevicesByBrand([FromQuery] string brand)
+    public async IAsyncEnumerable<DeviceResponse> SearchDevicesByBrand([FromQuery] string brand, [FromQuery] ulong offset = 0, [FromQuery] byte size = 2)
     {
         if (string.IsNullOrWhiteSpace(brand))
             throw new ArgumentNullException(nameof(brand));
 
-        await foreach (var device in _repo.GetAllDevicesByBrandAsync(BrandId.From(brand))) {
+        await foreach (var device in _repo.GetAllDevicesByBrandAsync(BrandId.From(brand), new PageInfo() { Offset = offset, Size = size})) {
             yield return new DeviceResponse {
                 Id = device.Id.Value,
                 Name = device.Name,

@@ -17,6 +17,7 @@ public class Device
 
     internal static Device Create(DeviceId id, string name, BrandId brandId)
         => new(id, name, brandId, DateTime.Now);
+
     internal void Update(UpdateDevice changes) {
         Name = changes.Name;
         BrandId = BrandId.From(changes.Brand);
@@ -29,13 +30,19 @@ internal record UpdateDevice
     public string Brand { get; init; }
 }
 
+public record PageInfo
+{
+    public ulong Offset { get; init; } = 0;
+    public byte Size { get; init; } = 2;
+}
+
 public interface IDeviceRepository
 {
     //public Task<IReadOnlyCollection<Device>> GetListOfDevicesByBrandAsync(BrandId id);
 
     public Task<Device?> GetDeviceAsync(DeviceId guid);
     public IAsyncEnumerable<Device> GetAllDevicesAsync();
-    public IAsyncEnumerable<Device> GetAllDevicesByBrandAsync(BrandId brandId);
+    public IAsyncEnumerable<Device> GetAllDevicesByBrandAsync(BrandId brandId, PageInfo pageInfo );
 
     public Task SaveDeviceAsync(Device device);
     public Task DeleteDeviceAsync(DeviceId id);    

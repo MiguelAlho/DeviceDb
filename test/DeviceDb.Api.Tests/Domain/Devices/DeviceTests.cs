@@ -18,7 +18,7 @@ public class DeviceTests
         var id = DeviceId.Create();
         var name = _fixture.Create<string>();
         var brand = BrandId.From(_fixture.Create<string>());
-
+        
         var device = Device.Create(id, name, brand);
 
         device.Id.Should().Be(id);

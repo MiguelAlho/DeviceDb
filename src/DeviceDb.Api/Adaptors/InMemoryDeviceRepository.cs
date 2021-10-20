@@ -43,10 +43,12 @@ public class SqliteDeviceRepository : IDeviceRepository
         }
     }
 
-    public async IAsyncEnumerable<Device> GetAllDevicesByBrandAsync(BrandId brandId)
+    public async IAsyncEnumerable<Device> GetAllDevicesByBrandAsync(BrandId brandId, PageInfo pageInfo)
     {
         using var connection = await CreateOpenConnection();
-        var devices = await connection.QueryAsync<DeviceRecord>("SELECT * FROM Device WHERE BrandId=@BrandId", new { BrandId = brandId.Value });
+        var devices = await connection.QueryAsync<DeviceRecord>(
+            "SELECT * FROM Device WHERE BrandId=@BrandId ORDER BY CreatedOn DESC LIMIT @Size OFFSET @Offset", 
+            new { BrandId = brandId.Value, Size=pageInfo.Size, Offset=pageInfo.Offset });
 
         foreach (var device in devices) {
             yield return new Device(
